@@ -1,6 +1,8 @@
+from server import main as run_server
+
 def run():
     # see server.py for more detail, all server-related stuff is handled there.
-    import server
+    run_server()
 
 
 if __name__ == "__main__":

@@ -1,7 +1,11 @@
 from os import path
 
-from flask import Flask, g, session, redirect, request, url_for, jsonify, render_template, send_from_directory, escape
-from flask_socketio import SocketIO, disconnect
+from flask import (
+    Flask, 
+    render_template, 
+    send_from_directory
+)
+from flask_socketio import SocketIO
 
 
 def main():
@@ -15,8 +19,7 @@ def main():
     # !!! FUN !!! DEBUG MODE. Gives access to most stuff on server, very dangerous to be put on production.
     DEBUG = False
     # Secret key used to encrypt requests and stuff.
-    SECRET_KEY = "SUPER SECRET KEY WE'RE NOT ACTUALLY USING AND WHICH SHOULD BE PUT IN CONFIGS AS TO PROTECT FROM HACKERS AND STUFF"
-
+    SECRET_KEY = "SECRET KEY TO PUT IN CONFIG AND STUFF"
 
     # The directory with all web-related templates.
     template_dir = path.join(CUR_PATH, '../templates')
@@ -32,26 +35,25 @@ def main():
 
     @app.after_request
     def after_request(response):
-        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers[
+            "Strict-Transport-Security"
+        ] = "max-age=31536000; includeSubDomains"
         # response.headers['Content-Security-Policy'] = "default-src 'self'"
-        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers["X-Content-Type-Options"] = "nosniff"
         # response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers["X-XSS-Protection"] = "1; mode=block"
         return response
 
 
-    @app.route('/')
+    @app.route("/")
     def index():
         return render_template("index.html")
 
 
-    @app.route('/static/<path:path>')
+    @app.route("/static/<path:path>")
     def send_static(path):
         return send_from_directory(static_dir, path)
 
-    print(
-        "=====\n" +
-        "Server starting on " + str(IP) + ":" + str(PORT)
-        )
+    print("=====\n" + "Server starting on " + str(IP) + ":" + str(PORT))
 
     socketio.run(app, host=IP, port=PORT, debug=DEBUG)

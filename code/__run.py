@@ -3,6 +3,7 @@ from traceback import print_exception
 
 from server import main as run_server
 
+
 def run():
     # see server.py for more detail, all server-related stuff is handled there.
     run_server()
@@ -14,7 +15,7 @@ if __name__ == "__main__":
         try:
             run()
 
-        # Anything in run() called for a forced 
+        # Anything in run() called for a forced.
         except SystemExit:
             break
 
@@ -24,6 +25,7 @@ if __name__ == "__main__":
                 exc_info = exc_info()
             finally:
                 # Display the *original* exception
+                print(err)
                 print_exception(*exc_info)
                 del exc_info
 

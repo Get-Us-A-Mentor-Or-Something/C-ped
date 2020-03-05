@@ -12,8 +12,8 @@ def main():
     IP = "0.0.0.0"
     # The port on which server is hosted.
     PORT = 8080
-    # !!! FUN !!! DEBUG MODE.
-    # Gives access to most stuff on server, very dangerous to be put on production.
+    # !!! FUN !!! DEBUG MODE. Gives access to most stuff on server,
+    # very dangerous to be put on production.
     DEBUG = False
     # Secret key used to encrypt requests and stuff.
     SECRET_KEY = "SECRET KEY TO PUT IN CONFIG AND STUFF"

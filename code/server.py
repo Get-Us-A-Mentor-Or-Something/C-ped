@@ -8,6 +8,8 @@ def main():
     # The path to directory this code is ran in.
     CUR_PATH = path.dirname(path.abspath(__file__))
 
+    # The IP to run server on.
+    IP = '0.0.0.0'
     # The port on which server is hosted.
     PORT = 8080
     # !!! FUN !!! DEBUG MODE. Gives access to most stuff on server, very dangerous to be put on production.
@@ -23,6 +25,7 @@ def main():
 
     app = Flask(__name__, template_folder=template_dir, static_url_path='')
     app.config['SECRET_KEY'] = SECRET_KEY
+
     # app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
     socketio = SocketIO(app)
 
@@ -48,7 +51,7 @@ def main():
 
     print(
         "=====\n" +
-        "Server started on 0.0.0.0:" + str(PORT)
+        "Server starting on " + str(IP) + ":" + str(PORT)
         )
 
-    socketio.run(app, host='0.0.0.0', port=PORT, debug=DEBUG)
+    socketio.run(app, host=IP, port=PORT, debug=DEBUG)

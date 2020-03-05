@@ -1,3 +1,6 @@
+from sys import exc_info
+from traceback import print_exception
+
 from server import main as run_server
 
 def run():
@@ -18,10 +21,10 @@ if __name__ == "__main__":
         # Exceptions displaying.
         except Exception as err:
             try:
-                exc_info = sys.exc_info()
+                exc_info = exc_info()
             finally:
                 # Display the *original* exception
-                traceback.print_exception(*exc_info)
+                print_exception(*exc_info)
                 del exc_info
 
         stopper = input().lower()

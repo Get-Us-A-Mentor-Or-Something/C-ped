@@ -1,10 +1,6 @@
 from os import path
 
-from flask import (
-    Flask, 
-    render_template, 
-    send_from_directory
-)
+from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO
 
 
@@ -13,25 +9,25 @@ def main():
     CUR_PATH = path.dirname(path.abspath(__file__))
 
     # The IP to run server on.
-    IP = '0.0.0.0'
+    IP = "0.0.0.0"
     # The port on which server is hosted.
     PORT = 8080
-    # !!! FUN !!! DEBUG MODE. Gives access to most stuff on server, very dangerous to be put on production.
+    # !!! FUN !!! DEBUG MODE.
+    # Gives access to most stuff on server, very dangerous to be put on production.
     DEBUG = False
     # Secret key used to encrypt requests and stuff.
     SECRET_KEY = "SECRET KEY TO PUT IN CONFIG AND STUFF"
 
     # The directory with all web-related templates.
-    template_dir = path.join(CUR_PATH, '../templates')
+    template_dir = path.join(CUR_PATH, "../templates")
     # The directory for static files, such as .css, client-side JavaScript.
-    static_dir = path.join(CUR_PATH, '../static')
+    static_dir = path.join(CUR_PATH, "../static")
 
-    app = Flask(__name__, template_folder=template_dir, static_url_path='')
-    app.config['SECRET_KEY'] = SECRET_KEY
+    app = Flask(__name__, template_folder=template_dir, static_url_path="")
+    app.config["SECRET_KEY"] = SECRET_KEY
 
     # app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
     socketio = SocketIO(app)
-
 
     @app.after_request
     def after_request(response):
@@ -44,11 +40,9 @@ def main():
         response.headers["X-XSS-Protection"] = "1; mode=block"
         return response
 
-
     @app.route("/")
     def index():
         return render_template("index.html")
-
 
     @app.route("/static/<path:path>")
     def send_static(path):

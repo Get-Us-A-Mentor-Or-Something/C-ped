@@ -33,9 +33,10 @@ function collectDataToJson() {
   let testsCases = document.getElementById("testsList").getElementsByClassName("testCase");
 
   for (let testCase of testsCases) {
-    let test = new Object();
-    test.name = testCase.querySelector(".testName").querySelector("input").value;
-    test.result = testCase.querySelector(".testCaseResult").querySelector("input").value;
+    let test = {
+        "name": testCase.querySelector(".testName").querySelector("input").value,
+        "result": testCase.querySelector(".testCaseResult").querySelector("input").value
+    };
 
     test.arguments = new Array();
     testInputs = testCase.querySelector(".testCaseArgument").getElementsByTagName('input');

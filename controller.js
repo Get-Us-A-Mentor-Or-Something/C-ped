@@ -4,9 +4,7 @@ const testsList = document.getElementById("testsList");
 
 
 document.getElementById("createTestButton").querySelector("img").addEventListener("click", () => createTest() );
-document.getElementById("sendDataButton").addEventListener("click", function () {
-  sendData();
-});
+  document.getElementById("sendDataButton").addEventListener("click", sendData);
 
 
 

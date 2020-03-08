@@ -1,5 +1,6 @@
-/* eslint-env es6, browser*/
+/* eslint-env es6, browser */
 /* eslint-disable no-console */
+/* global io */
 
 const socket = io();
 

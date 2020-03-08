@@ -118,8 +118,9 @@ class Client_Info:
 
     @email.setter
     def email(self, new_email):
+        old_email = self._email
         self._email = new_email
-        if new_email != self._email:
+        if new_email != old_email:
             self.update_db(email=new_email)
 
     @property
@@ -128,15 +129,10 @@ class Client_Info:
 
     @discord_id.setter
     def discord_id(self, new_discord_id):
+        old_discord_id = self._discord_id
         self._discord_id = new_discord_id
-        if new_discord_id != self._discord_id:
+        if new_discord_id != old_discord_id:
             self.update_db(permissions=new_discord_id)
-
-    @email.setter
-    def email(self, new_email):
-        self._email = new_email
-        if new_email != self._email:
-            self.update_db(email=new_email)
 
     @property
     def permissions(self):
@@ -144,8 +140,9 @@ class Client_Info:
 
     @permissions.setter
     def permissions(self, new_permissions):
+        old_permissions = self._permissions
         self._permissions = new_permissions
-        if new_permissions != self._permissions:
+        if new_permissions != old_permissions:
             self.update_db(permissions=new_permissions)
 
     def clean_username(self, username):

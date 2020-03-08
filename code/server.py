@@ -20,11 +20,25 @@ def get_connections_by_ip(ip):
     if ip not in global_vars.client_infos_by_ip.keys():
         return 0
 
-    retVal = 0
-    for client_info in global_vars.client_infos_by_ip[ip]:
-        retVal += client_info.clients_connected
+    return sum(
+        client_info.clients_connected
+        for client_info in global_vars.client_infos_by_ip[ip]
+    )
 
-    return retVal
+
+def disconnect_message(request, reason=None):
+    print(
+        "Disconnected("
+        + str(global_vars.client_count)
+        + "/"
+        + str(global_vars.max_client_count)
+        + ") user("
+        + str(request.remote_addr)
+        + ")."
+        + (" Reason: " + reason)
+        if reason
+        else ""
+    )
 
 
 def main(CFG):
@@ -92,15 +106,7 @@ def main(CFG):
             global_vars.max_client_count >= 0
             and global_vars.client_count + 1 > global_vars.max_client_count
         ):
-            print(
-                "Disconnected("
-                + str(global_vars.client_count)
-                + "/"
-                + str(global_vars.max_client_count)
-                + ") user("
-                + str(request.remote_addr)
-                + "). Reason: Server overcrowded"
-            )
+            disconnect_message(request, "Server overcrowded")
             disconnect(request.sid)
             return
 
@@ -109,15 +115,7 @@ def main(CFG):
             and get_connections_by_ip(request.remote_addr)
             >= global_vars.max_clients_per_ip
         ):
-            print(
-                "Disconnected("
-                + str(global_vars.client_count)
-                + "/"
-                + str(global_vars.max_client_count)
-                + ") user("
-                + str(request.remote_addr)
-                + "). Reason: Too many connections on one IP"
-            )
+            disconnect_message(request, "Too many connections on one IP")
             disconnect(request.sid)
             return
 

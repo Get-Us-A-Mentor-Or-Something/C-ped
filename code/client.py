@@ -23,7 +23,7 @@ def get_user_by_session(session_obj, request_obj):
     key = session_obj.get("key")
     salt = session_obj.get("salt")
 
-    if(user_id is not None and key is not None and salt is not None):
+    if all(user_id, key, salt):
         db_user_cursor = db.cursor()
 
         combo_super_secret = key + salt

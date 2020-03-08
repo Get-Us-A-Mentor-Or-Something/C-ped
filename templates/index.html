@@ -1,13 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>C-ped</title>
-		<link rel="stylesheet" href="/static/main.css">
-	</head>
-	<body>
-		Page awaiting creation.
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/main.css">
+    <title>C-Ped</title>
+  </head>
+  <body>
+    <div class="container">
+      <div id="search">
+        <h2>Search request</h2>
+        <textarea id="searchInputField" onkeyup="adjustInputFieldSize()" name="name" rows="1" cols="70"></textarea>
+      </div>
+      <div id="TestsAndResult">
 
-		<script type="text/javascript" src="/static/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="/static/client.js"></script>
-	</body>
+        <div class="wrapper">
+          <div id="tests">
+            <h2>Tests</h2>
+            <div id="testsList">
+            </div>
+          </div>
+
+          <div id="results">
+            <h2>Results</h2>
+            <div id="resultList">
+              <div class="result">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="createTestButton">
+          <img src="/static/resources/btn3.png" alt="">
+        </div>
+
+      </div>
+      <button id="sendDataButton" type="button">Search for code </button>
+
+    </div>
+
+    <script type="text/javascript" src="/static/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/static/client.js"></script>
+  </body>
 </html>

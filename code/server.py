@@ -47,6 +47,8 @@ def main(CFG):
 
     server_CFG = CFG["Server"]
 
+    # Secret key used to encrypt requests and stuff.
+    SECRET_KEY = server_CFG.get("secret_key")
     # The IP to run server on.
     IP = server_CFG.get("ip", "0.0.0.0")
     # The port on which server is hosted.
@@ -54,8 +56,9 @@ def main(CFG):
     # !!! FUN !!! DEBUG MODE. Gives access to most stuff on server,
     # very dangerous to be put on production.
     DEBUG = server_CFG.getboolean("debug", False)
-    # Secret key used to encrypt requests and stuff.
-    SECRET_KEY = server_CFG.get("secret_key")
+    # Mostly for debugging purposes, the ability to force client
+    # to update all cached files.
+    FORCE_CACHE_UPDATE = server_CFG.getboolean("force_cache_update", False)
 
     # The directory with all web-related templates.
     template_dir = path.join(CUR_PATH, "../templates")
@@ -77,6 +80,13 @@ def main(CFG):
 
     @app.after_request
     def after_request(response):
+        # Force cache update if for some reason it is oh so required.
+        if(FORCE_CACHE_UPDATE):
+            response.headers[
+                "Cache-Control"
+            ] = "no-cache, no-store, must-revalidate, public, max-age=0"
+            response.headers["Expires"] = 0
+            response.headers["Pragma"] = "no-cache"
         response.headers[
             "Strict-Transport-Security"
         ] = "max-age=31536000; includeSubDomains"

@@ -51,6 +51,7 @@ def generate_default():
         "ip": "0.0.0.0",
         "port": 8080,
         "debug": False,
+        "force_cache_update": False,
         # Use -1 to have no max count.
         "max_client_count": -1,
         "max_clients_per_ip": 1,

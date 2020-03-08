@@ -149,7 +149,8 @@ class Client_Info:
             "",
             username
         )
-        username_stripped = username_stripped.strip()  # Remove trailing spaces.
+        # Remove trailing spaces.
+        username_stripped = username_stripped.strip()
 
         return username
 

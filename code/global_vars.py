@@ -1,3 +1,5 @@
+DELIMETERS = [".", ",", ":", "?", "!", ";"]
+
 client_count = 0
 max_client_count = 0
 

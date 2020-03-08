@@ -7,17 +7,14 @@ from os import path
 from flask import (
     Flask,
     render_template,
-    send_file,
     send_from_directory,
-    jsonify,
     request,
     session,
 )
 from flask_socketio import SocketIO, disconnect
 
-from defines import USER_ID_ANONYMOUS
-
 from client import Client
+
 
 def get_connections_by_ip(ip):
     if ip not in global_vars.client_infos_by_ip.keys():
@@ -83,11 +80,18 @@ def main(CFG):
     def send_static(file_path):
         file_mimetype = mimetypes.guess_type(file_path)[0]
 
-        return send_from_directory(static_dir, file_path, mimetype=file_mimetype)
+        return send_from_directory(
+            static_dir,
+            file_path,
+            mimetype=file_mimetype
+        )
 
     @socketio.on("connect")
     def on_connect(methods=["GET", "POST"]):
-        if global_vars.max_client_count >=0 and global_vars.client_count + 1 > global_vars.max_client_count:
+        if (
+            global_vars.max_client_count >= 0
+            and global_vars.client_count + 1 > global_vars.max_client_count
+        ):
             print(
                 "Disconnected("
                 + str(global_vars.client_count)
@@ -100,7 +104,11 @@ def main(CFG):
             disconnect(request.sid)
             return
 
-        if global_vars.max_clients_per_ip >= 0 and get_connections_by_ip(request.remote_addr) >= global_vars.max_clients_per_ip:
+        if (
+            global_vars.max_clients_per_ip >= 0
+            and get_connections_by_ip(request.remote_addr)
+            >= global_vars.max_clients_per_ip
+        ):
             print(
                 "Disconnected("
                 + str(global_vars.client_count)
@@ -112,8 +120,6 @@ def main(CFG):
             )
             disconnect(request.sid)
             return
-
-        can_speak = True
 
         client = Client(session, request)
         client.on_connect()

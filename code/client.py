@@ -1,6 +1,14 @@
 import global_vars
 
-from defines import SERVER_PERMISSION_NONE, SERVER_PERMISSION_BASIC, USER_ID_ANONYMOUS
+import re
+
+from flask_socketio import disconnect
+
+from defines import (
+    SERVER_PERMISSION_NONE,
+    SERVER_PERMISSION_BASIC,
+    USER_ID_ANONYMOUS,
+)
 
 
 def get_user_by_session(session_obj, request_obj):
@@ -19,15 +27,25 @@ def get_user_by_session(session_obj, request_obj):
         db_user_cursor = db.cursor()
 
         combo_super_secret = key + salt
-        hashed_super_secret = hashlib.sha512(combo_super_secret.encode('utf-8')).digest()
+        hashed_super_secret = hashlib.sha512(
+             combo_super_secret.encode('utf-8')
+        ).digest()
 
-        db_user_cursor.execute("SELECT super_secret FROM users WHERE user_id=?", (user_id,))
+        db_user_cursor.execute(
+            "SELECT super_secret FROM users WHERE user_id=?",
+            (user_id,)
+        )
+
         for row in db_user_cursor.fetchall():
             if(hashed_super_secret == row[0]):
-                if(str(user_id) in global_vars.client_infos_by_user_id.keys()):
+                lookup = global_vars.client_infos_by_user_id.keys()
+                if str(user_id) in lookup:
                     return global_vars.client_infos_by_user_id[str(user_id)]
                 else:
-                    return Client_Info(user_id=user_id, ip=request_obj.remote_addr)
+                    return Client_Info(
+                        user_id=user_id,
+                        ip=request_obj.remote_addr
+                    )
     """
     return None
 
@@ -59,7 +77,10 @@ class Client_Info:
         """
         db_user_cursor = db.cursor()
 
-        db_user_cursor.execute("SELECT email, discord_id, permissions FROM users WHERE user_id=?", (self.user_id,))
+        db_user_cursor.execute(
+            "SELECT email, discord_id, permissions FROM users WHERE user_id=?",
+            (self.user_id,)
+        )
         for row in db_user_cursor.fetchall():
             self.email = row[0]
             self.discord_id = row[1]
@@ -67,7 +88,12 @@ class Client_Info:
         """
         pass
 
-    def update_db(self, email="", discord_id="", permissions=SERVER_PERMISSION_NONE):
+    def update_db(
+        self,
+        email="",
+        discord_id="",
+        permissions=SERVER_PERMISSION_NONE
+    ):
         """
         if(self.user_id == USER_ID_ANONYMOUS):
             return
@@ -76,7 +102,10 @@ class Client_Info:
             self.email = email
         if(discord_id != "" and discord_id != self.discord_id):
             self.discord_id = discord_id
-        if(permissions != SERVER_PERMISSION_BASIC and permissions != self.permissions):
+        if(
+            permissions != SERVER_PERMISSION_BASIC
+            and permissions != self.permissions
+        ):
             self.permissions = permissions
 
         update_user(self.user_id, email, discord_id, permissions)
@@ -120,8 +149,12 @@ class Client_Info:
             self.update_db(permissions=new_permissions)
 
     def clean_username(self, username):
-        delimeters_to_remove = "".join(DELIMETERS)
-        username_stripped = re.sub("[" + delimeters_to_remove + "]", "", username)
+        delimeters_to_remove = "".join(global_vars.DELIMETERS)
+        username_stripped = re.sub(
+            "[" + delimeters_to_remove + "]",
+            "",
+            username
+        )
         username_stripped = username_stripped.strip()  # Remove trailing spaces.
 
         return username

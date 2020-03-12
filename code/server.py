@@ -1,3 +1,6 @@
+import json
+import os
+import sqlite3
 import mimetypes
 
 import global_vars
@@ -7,13 +10,25 @@ from os import path
 from flask import (
     Flask,
     render_template,
+    redirect,
     send_from_directory,
+    jsonify,
     request,
     session,
+    url_for,
+)
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
 )
 from flask_socketio import SocketIO, disconnect
 
-from client import Client
+from authorization import setup_authorization, is_authorized
+from client import Client, Client_Info
+from user_info import User_Info
 
 
 def get_connections_by_ip(ip):
@@ -23,21 +38,6 @@ def get_connections_by_ip(ip):
     return sum(
         client_info.clients_connected
         for client_info in global_vars.client_infos_by_ip[ip]
-    )
-
-
-def disconnect_message(request, reason=None):
-    print(
-        "Disconnected("
-        + str(global_vars.client_count)
-        + "/"
-        + str(global_vars.max_client_count)
-        + ") user("
-        + str(request.remote_addr)
-        + ")."
-        + (" Reason: " + reason)
-        if reason
-        else ""
     )
 
 
@@ -70,7 +70,9 @@ def main(CFG):
     mimetypes.add_type("text/html", ".html")
 
     app = Flask(__name__, template_folder=template_dir, static_url_path="")
-    app.config["SECRET_KEY"] = SECRET_KEY
+    app.secret_key = SECRET_KEY
+
+    setup_authorization(app, CFG)
 
     # app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
     socketio = SocketIO(app)
@@ -94,11 +96,28 @@ def main(CFG):
     def send_static(file_path):
         file_mimetype = mimetypes.guess_type(file_path)[0]
 
-        return send_from_directory(
-            static_dir,
-            file_path,
-            mimetype=file_mimetype
+        return send_from_directory(static_dir, file_path, mimetype=file_mimetype)
+
+    @app.route("/privacy")
+    def privacy():
+        return (
+            "This text is a placeholder"
+            + " if you're seeing this, please"
+            + " consider doing an issue report"
+            + " on project's GitHub."
         )
+
+    @app.route("/me")
+    def me():
+        if is_authorized(session, request):
+            return (
+                "<p>Hello, {}! You're logged in! Email: {}</p>"
+                "<div><p>Google Profile Picture:</p>"
+                '<img src="{}" alt="Google profile pic"></img></div>'
+                '<a class="button" href="/logout">Logout</a>'
+            ).format(current_user.name, current_user.email, current_user.profile_pic)
+        else:
+            return '<a class="button" href="/login_google">Google Login</a>'
 
     @socketio.on("connect")
     def on_connect(methods=["GET", "POST"]):
@@ -106,7 +125,7 @@ def main(CFG):
             global_vars.max_client_count >= 0
             and global_vars.client_count + 1 > global_vars.max_client_count
         ):
-            disconnect_message(request, "Server overcrowded")
+            global_vars.disconnect_message(request, "Server overcrowded")
             disconnect(request.sid)
             return
 
@@ -115,11 +134,11 @@ def main(CFG):
             and get_connections_by_ip(request.remote_addr)
             >= global_vars.max_clients_per_ip
         ):
-            disconnect_message(request, "Too many connections on one IP")
+            global_vars.disconnect_message(request, "Too many connections on one IP")
             disconnect(request.sid)
             return
 
-        client = Client(session, request)
+        client = Client(session, request, current_user)
         client.on_connect()
 
     @socketio.on("disconnect")
@@ -129,4 +148,21 @@ def main(CFG):
 
     print("=====\n" + "Server starting on " + str(IP) + ":" + str(PORT))
 
-    socketio.run(app, host=IP, port=PORT, debug=DEBUG)
+    # !!! NB !!! PLEASE SET UP PROPER SSL CERTIFICATE SIGNING.
+    socketio.run(
+        app,
+        host=IP,
+        port=PORT,
+        debug=DEBUG,
+    )
+    """
+        keyfile=path.join(
+                static_dir,
+                "cert/39418341_www.velo-c-ped.org.key",
+            ),
+        certfile=path.join(
+                static_dir,
+                "cert/39418341_www.velo-c-ped.org.cert",
+            ),
+    )
+    """

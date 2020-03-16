@@ -9,13 +9,12 @@ from defines import (
     SERVER_PERMISSION_BASIC,
     USER_ID_ANONYMOUS,
 )
-from user_info import User_Info, Guest_Info
 
 
 class Client_Info:
     def __init__(self, user_id=USER_ID_ANONYMOUS, ip=""):
         # Placeholder, as for setter to work properly.
-        self._user_id = ""
+        self._user_id = USER_ID_ANONYMOUS
         self.user_id = user_id
 
         if ip in global_vars.client_infos_by_ip.keys():

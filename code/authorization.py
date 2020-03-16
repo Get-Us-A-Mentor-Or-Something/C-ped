@@ -1,21 +1,13 @@
 import json
-import os
-import sqlite3
 
 import global_vars
 
-from os import path
-
 from flask import (
-    Flask,
     redirect,
-    render_template,
-    send_from_directory,
     request,
     session,
     url_for,
 )
-from flask_socketio import SocketIO, disconnect
 from flask_login import (
     LoginManager,
     current_user,
@@ -26,7 +18,6 @@ from flask_login import (
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 
-from client import Client, Client_Info
 from user_info import User_Info, Guest_Info
 
 
@@ -109,7 +100,10 @@ def setup_google_authorization(app, CFG):
         # Find out what URL to hit for Google login
         google_provider_cfg = get_google_provider_cfg()
         if google_provider_cfg is None:
-            return global_vars.redirect_error("Google Authentication impossible.", error_code=400)
+            return global_vars.redirect_error(
+                "Google Authentication impossible.",
+                error_code=400
+            )
 
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
@@ -132,7 +126,10 @@ def setup_google_authorization(app, CFG):
 
         google_provider_cfg = get_google_provider_cfg()
         if google_provider_cfg is None:
-            return global_vars.redirect_error("Google Authentication impossible.", error_code=400)
+            return global_vars.redirect_error(
+                "Google Authentication impossible.",
+                error_code=400
+            )
 
         # Getting a URL to hit  to get tokens that allow to ask for access.
         token_endpoint = google_provider_cfg["token_endpoint"]
@@ -171,7 +168,7 @@ def setup_google_authorization(app, CFG):
             )
 
         # Try to find a User_Info matching this id in DB.
-        user = User_Info.get(user_id=unique_id)
+        user = User_Info.get(google_id=unique_id)
         if user is None:
             user = User_Info(
                 name=users_name,

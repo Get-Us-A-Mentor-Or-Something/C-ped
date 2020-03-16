@@ -7,7 +7,11 @@ random = random.SystemRandom()
 
 def get_random_string(
     length=12,
-    allowed_chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    allowed_chars=(
+        "abcdefghijklmnopqrstuvwxyz",
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "0123456789",
+    )
 ):
     """
     Returns a securely generated random string.
@@ -60,7 +64,11 @@ def gen_new_super_secret():
     # and does somewhat increase difficulty, as it's 30 more symbols...
     salt = get_salt()
 
-    return {"super_secret": gen_super_secret(key, salt), "key": key, "salt": salt}
+    return {
+        "super_secret": gen_super_secret(key, salt),
+        "key": key,
+        "salt": salt
+    }
 
 
 def int2uni(val):

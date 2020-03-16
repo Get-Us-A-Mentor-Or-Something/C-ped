@@ -1,11 +1,6 @@
 import sqlite3
-import hashlib
-
-import global_vars
 
 from os import path, makedirs
-
-from defines import *
 
 
 class DB_Exception(Exception):
@@ -27,7 +22,7 @@ users_db_fp = path.join(database_path, users_db_fn)
 def init_user_database():
     # Create file, and dirs, if those do not exist.
     makedirs(database_path, exist_ok=True)
-    with open(users_db_fp, "w+") as f:
+    with open(users_db_fp, "w+"):
         pass
 
     user_db = sqlite3.connect(users_db_fp)

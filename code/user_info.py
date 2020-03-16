@@ -2,9 +2,13 @@ import random
 
 from flask_login import UserMixin
 
-from defines import SERVER_PERMISSION_NONE, SERVER_PERMISSION_BASIC, USER_ID_ANONYMOUS
-from database import user_db, user_db_cursor
-from security import gen_super_secret, gen_new_super_secret, int2uni
+from defines import (
+    SERVER_PERMISSION_NONE,
+    SERVER_PERMISSION_BASIC,
+    USER_ID_ANONYMOUS
+)
+from database import user_db
+from security import gen_new_super_secret, int2uni
 
 
 class User_Info(UserMixin):
@@ -44,7 +48,14 @@ class User_Info(UserMixin):
         temp_cursor.execute(
             """
             INSERT INTO
-            users(super_secret, secret_salt, name, email, pfp, google_id, permissions)
+            users
+            (super_secret,
+            secret_salt,
+            name,
+            email,
+            pfp,
+            google_id,
+            permissions)
             VALUES (?,?,?,?,?,?,?)
             """,
             (
@@ -179,11 +190,18 @@ class User_Info(UserMixin):
             secret_salt=?
             WHERE user_id=?
             """,
-            (super_secret_obj["super_secret"], super_secret_obj["salt"], self.user_id,),
+            (
+                super_secret_obj["super_secret"],
+                super_secret_obj["salt"],
+                self.user_id,
+            ),
         )
         user_db.commit()
 
-        return {"key": super_secret_obj["key"], "salt": super_secret_obj["salt"]}
+        return {
+            "key": super_secret_obj["key"],
+            "salt": super_secret_obj["salt"]
+        }
 
     def update_field(
         self, field, value,
@@ -212,7 +230,7 @@ class User_Info(UserMixin):
         return True
 
     def is_anonymous(self):
-        return not is_authenticated()
+        return not self.is_authenticated()
 
     def get_id(self):
         return int2uni(self.user_id)

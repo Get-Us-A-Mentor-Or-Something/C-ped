@@ -1,6 +1,3 @@
-import json
-import os
-import sqlite3
 import mimetypes
 
 import global_vars
@@ -18,17 +15,12 @@ from flask import (
     url_for,
 )
 from flask_login import (
-    LoginManager,
     current_user,
-    login_required,
-    login_user,
-    logout_user,
 )
 from flask_socketio import SocketIO, disconnect
 
 from authorization import setup_authorization, is_authorized
-from client import Client, Client_Info
-from user_info import User_Info
+from client import Client
 
 
 def get_connections_by_ip(ip):
@@ -96,7 +88,11 @@ def main(CFG):
     def send_static(file_path):
         file_mimetype = mimetypes.guess_type(file_path)[0]
 
-        return send_from_directory(static_dir, file_path, mimetype=file_mimetype)
+        return send_from_directory(
+            static_dir,
+            file_path,
+            mimetype=file_mimetype
+        )
 
     @app.route("/privacy")
     def privacy():
@@ -115,7 +111,11 @@ def main(CFG):
                 "<div><p>Google Profile Picture:</p>"
                 '<img src="{}" alt="Google profile pic"></img></div>'
                 '<a class="button" href="/logout">Logout</a>'
-            ).format(current_user.name, current_user.email, current_user.profile_pic)
+            ).format(
+                current_user.name,
+                current_user.email,
+                current_user.profile_pic
+            )
         else:
             return '<a class="button" href="/login_google">Google Login</a>'
 
@@ -134,7 +134,10 @@ def main(CFG):
             and get_connections_by_ip(request.remote_addr)
             >= global_vars.max_clients_per_ip
         ):
-            global_vars.disconnect_message(request, "Too many connections on one IP")
+            global_vars.disconnect_message(
+                request,
+                "Too many connections on one IP"
+            )
             disconnect(request.sid)
             return
 
@@ -158,11 +161,11 @@ def main(CFG):
     """
         keyfile=path.join(
                 static_dir,
-                "cert/39418341_www.velo-c-ped.org.key",
+                keyfilepath,
             ),
         certfile=path.join(
                 static_dir,
-                "cert/39418341_www.velo-c-ped.org.cert",
+                "certfilepath,
             ),
     )
     """

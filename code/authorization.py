@@ -21,7 +21,7 @@ import requests
 from user_info import User_Info, Guest_Info
 
 
-def is_authorized(session_obj, request_obj):
+def is_authenticated(session_obj, request_obj):
     return current_user.is_authenticated() # or User_Info.get_by_session(session_obj, request_obj)
 
 
@@ -94,7 +94,7 @@ def setup_google_authorization(app, CFG):
 
     @app.route("/login_google")
     def login_google():
-        if is_authorized(session, request):
+        if is_authenticated(session, request):
             return redirect(url_for(".me"))
 
         # Find out what URL to hit for Google login
@@ -118,7 +118,7 @@ def setup_google_authorization(app, CFG):
 
     @app.route("/login_google/callback")
     def callback():
-        if is_authorized(session, request):
+        if is_authenticated(session, request):
             return redirect(url_for(".me"))
 
         # Authorization code Google sent back.

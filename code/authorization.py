@@ -22,7 +22,8 @@ from user_info import User_Info, Guest_Info
 
 
 def is_authenticated(session_obj, request_obj):
-    return current_user.is_authenticated() # or User_Info.get_by_session(session_obj, request_obj)
+    # or User_Info.get_by_session(session_obj, request_obj)
+    return current_user.is_authenticated()
 
 
 def setup_general_authorization(app, CFG):
@@ -149,12 +150,14 @@ def setup_google_authorization(app, CFG):
         )
 
         # Parse the token.
-        google_client.parse_request_body_response(json.dumps(token_response.json()))
+        google_client.parse_request_body_response(
+            json.dumps(token_response.json()))
 
         # Getting a URL that will provide all user information.
         userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
         uri, headers, body = google_client.add_token(userinfo_endpoint)
-        userinfo_response = requests.get(uri, headers=headers, data=body).json()
+        userinfo_response = requests.get(
+            uri, headers=headers, data=body).json()
 
         # Checking whether user's email is actually verified.
         if userinfo_response.get("email_verified"):
@@ -192,6 +195,7 @@ def setup_google_authorization(app, CFG):
 
         # Send user back to homepage
         return redirect(url_for(".me"))
+
 
 def setup_authorization(app, CFG):
     # User session management setup

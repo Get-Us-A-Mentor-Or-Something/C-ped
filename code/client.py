@@ -66,7 +66,8 @@ class Client:
 
         self.user_info = current_user
         if self.user_info.is_authenticated() and self.user_info.is_active():
-            self.client_info = Client_Info(user_id=self.user_info.user_id, ip=self.ip)
+            self.client_info = Client_Info(
+                user_id=self.user_info.user_id, ip=self.ip)
         else:
             self.client_info = Client_Info(ip=self.ip)
 

@@ -2,7 +2,6 @@ const config = require("./utility/config")
 
 const http = require('http');
 const express = require('express');
-const socketio = require('socket.io');
 
 const port = config.get('Server', 'sandbox_port');
 
@@ -25,6 +24,7 @@ server.listen(port, () => {
   console.log("Sandbox started on " + port);
 });
 
+/*
 const readline = require('readline');
 
 const rl = readline.createInterface({
@@ -33,7 +33,6 @@ const rl = readline.createInterface({
 });
 
 rl.on('line', (input) => {
-  /*
     Do command line processing here someday.
-  */
 });
+*/

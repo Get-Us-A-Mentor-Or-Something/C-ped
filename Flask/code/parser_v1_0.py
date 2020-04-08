@@ -17,14 +17,15 @@ def get_tags():
 # searching function
 
 
-def search(tags, min_=20, from_date=1457136000, to_date = 1457222400):
+def search(tags, min_=20, from_date=1457136000, to_date=1457222400):
     try:
         SITE = StackAPI('stackoverflow')
     except StackAPIError as e:
         print(e.message)
 
     # GET json tree by tags
-    questions = SITE.fetch('questions', fromdate=from_date, todate=to_date, min=min_, tagged=tags, sort = 'votes')
+    questions = SITE.fetch('questions', fromdate=from_date,
+                           todate=to_date, min=min_, tagged=tags, sort='votes')
     answer_id, question_link = [], []
 
     # extracting url and accepted answer from json tree, if no accepted answer - skip

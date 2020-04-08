@@ -1,13 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>C-ped</title>
-		<link rel="stylesheet" href="/static/main.css">
-	</head>
-	<body>
-		Page awaiting creation. <a class="button" href="/me">My page</a>.
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="..\static\css.css">
+    <title>C-ped</title>
+  </head>
+  <body>
+    <div class="container">
+      <div id="search">
+        <h2>Search request</h2>
+        <input type="text" name="searchInput" id="searchInputField" value="">
+      </div>
+      <div id="TestsAndResult">
 
-		<script type="text/javascript" src="/static/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="/static/client.js"></script>
-	</body>
+        <div class="wrapper">
+          <div id="tests">
+            <h2>Tests</h2>
+            <div id="testsList">
+            </div>
+          </div>
+
+          <div id="results">
+            <h2>Results</h2>
+            <div id="resultList">
+              <div class="result">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="createTestButton">
+          <input type="image" src="..\static\resources\btn2.png" name="" value="">
+        </div>
+
+      </div>
+      <button id="sendDataButton" type="button">Search for code </button>
+
+    </div>
+
+    <script src="..\static\controller.js"></script>
+  </body>
 </html>

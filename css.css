@@ -71,10 +71,6 @@ background: radial-gradient(circle, rgba(188,86,188,1) 0%, rgba(150,182,255,1) 1
  display: none;
 }
 
-#testsList input[type="text"] {
-    background: transparent;
-    border: none;
-}
 
 
 .testCaseArgument {

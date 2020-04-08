@@ -3,25 +3,15 @@ const testsList = document.getElementById("testsList");
 
 
 
-document.getElementById("createTestButton").querySelector("img").addEventListener("click", () => createTest() );
-  document.getElementById("sendDataButton").addEventListener("click", sendData);
-
+document.getElementById("createTestButton").querySelector("input").addEventListener("click", () => createTest() );
+document.getElementById("sendDataButton").addEventListener("click", sendData);
 
 
 function sendData() {
-let xhr = new XMLHttpRequest();
-let url = "DataProccesor";
-xhr.open("POST", url, true);
-xhr.setRequestHeader("Content-Type", "application/json");
-xhr.send(collectDataToJson());
+
 }
 
-function adjustInputFieldSize() {
-  let label = document.getElementById("searchInputField");
-  if (label.value.length > 5) {
-     label.cols = label.cols + 1;
-  }
-}
+
 
 function collectDataToJson() {
   data = new Object();
@@ -48,7 +38,7 @@ function collectDataToJson() {
 
 
 function createArgument(button) {
-  let argumentsWindow = button.parentNode.parentNode.nextElementSibling.querySelector(".testCaseArgument");
+  let argumentsWindow = button.parentNode.nextElementSibling.querySelector(".testCaseArgument");
   let input = document.createElement("input");
   input.setAttribute("type", "text");
   argumentsWindow.appendChild(input);
@@ -60,11 +50,11 @@ function createArgument(button) {
 function toggleTestsWindow(test) {
   if (test.nextElementSibling.style.display == "none") {
     test.nextElementSibling.style.display = "block";
-    test.querySelector(".createTestCaseButton").style.display = "block";
+    test.querySelector(".addArgumentButton").style.display = "block";
   }
   else {
     test.nextElementSibling.style.display = "none";
-    test.querySelector(".createTestCaseButton").style.display = "none";
+    test.querySelector(".addArgumentButton").style.display = "none";
   }
 }
 
@@ -83,31 +73,30 @@ function createTest() {
 
 
 
-  let test = document.createElement("div");
-  test.setAttribute("class", "test");
-  testCase.appendChild(test);
+  let testItem = document.createElement("div");
+  testItem.setAttribute("class", "test");
+  testCase.appendChild(testItem);
   testsList.appendChild(testCase);
 
 
-  let input = document.createElement("input");
-  input.setAttribute("type", "text");
-  testName.appendChild(input);
+  let testNameInput = document.createElement("input");
+  testNameInput.setAttribute("type", "text");
+  testName.appendChild(testNameInput);
 
-  let createTestCaseButton = document.createElement('div');
-  createTestCaseButton.setAttribute('class', 'createTestCaseButton')
-  testName.appendChild(createTestCaseButton);
 
-  let img = document.createElement("img");
-  img.setAttribute("src", "resources/btn2.png");
-  img.addEventListener("click", function () {
+  let addArgumentButton = document.createElement("input");
+  addArgumentButton.setAttribute("src", "resources/btn2.png");
+  addArgumentButton.setAttribute("type", "image");
+  addArgumentButton.setAttribute("class", "addArgumentButton")
+  addArgumentButton.addEventListener("click", function () {
     createArgument(this)
   });
-  createTestCaseButton.appendChild(img);
+  testName.appendChild(addArgumentButton);
 
 
   let wrapper = document.createElement("div");
   wrapper.setAttribute("class", "wrapper");
-  test.appendChild(wrapper);
+  testItem.appendChild(wrapper);
 
   let testCaseArgument = document.createElement('div');
   testCaseArgument.setAttribute("class", "testCaseArgument");
@@ -124,5 +113,5 @@ function createTest() {
 
   wrapper.appendChild(testCaseResult);
 
-  input.focus();
+  testNameInput.focus();
 }

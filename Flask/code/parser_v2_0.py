@@ -10,7 +10,8 @@ def search(q='python search'):
     req = requests.get(url)
     # отримання блоку з посиланнями на відповіді
     soup = BeautifulSoup(req.content, 'html.parser')
-    result_div = soup.findAll('div', attrs={'class': 'question-summary search-result'})
+    result_div = soup.findAll(
+        'div', attrs={'class': 'question-summary search-result'})
     # тут має бути пошук по декільком сторінкам, якщо вони існують
     # pages = soup.find('div', attrs={'class':})
 
@@ -21,7 +22,8 @@ def search(q='python search'):
         try:
             link = r.find('a', href=True)
             if link != '':
-                question_link.append('https://stackoverflow.com/' + link['href'])
+                question_link.append(
+                    'https://stackoverflow.com/' + link['href'])
         except:
             continue
 

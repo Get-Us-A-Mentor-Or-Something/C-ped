@@ -25,7 +25,7 @@ class Loader {
 	          		try{
 	            		result = JSON.parse(request.response);
 	          			// some error while JSON parsing occured
-	          		} catch(e) { reject(request.response); };
+	          		} catch(e) { reject(request.response); }
 	          		// otherwise just return result
 	          		resolve(result);
 	      	}

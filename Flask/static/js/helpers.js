@@ -39,7 +39,7 @@ const parseArgument = string => {
 	let result = null;
 
 	try { result = JSON.parse(string); }
-	catch (SyntaxError) { return false; };
+	catch (SyntaxError) { return false; }
 
 	if (typeof result === 'object')
 		return isArray(result)

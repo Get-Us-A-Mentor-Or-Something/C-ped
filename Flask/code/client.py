@@ -132,11 +132,13 @@ class Client:
 
     def on_search(self, json):
         search_for = json['query']
-        parser_v1_0.search_dynamic(parser_v1_0.make_query(q=search_for, pagesize = 15), 1, self)
+        parser_v1_0.search_dynamic(parser_v1_0.make_query(
+            q=search_for, pagesize=15), 1, self)
 
     def add_result(self, result):
         self.client_info.current_results.append(result)
-        self.app.emit('update_results', {"data": self.client_info.current_results}, room=self.sid)
+        self.app.emit('update_results', {
+                      "data": self.client_info.current_results}, room=self.sid)
 
     def disconnect(self):
         disconnect(self.sid)

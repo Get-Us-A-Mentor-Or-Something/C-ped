@@ -26,19 +26,19 @@ from authorization import setup_authorization, is_authenticated
 from client import Client
 
 GENERIC_RESPONSE = [
-        {
-            "href": '#',
-            "text": "answer1",
-            "likes": 0,
-            "date": 1589139954
-        },
-        {
-            "href": '#',
-            "text": "answer2",
-            "likes": 34,
-            "date": 1589139954
-        },
-    ]
+    {
+        "href": '#',
+        "text": "answer1",
+        "likes": 0,
+        "date": 1589139954
+    },
+    {
+        "href": '#',
+        "text": "answer2",
+        "likes": 34,
+        "date": 1589139954
+    },
+]
 
 
 def get_connections_by_ip(ip):
@@ -128,7 +128,8 @@ def main(CFG):
     @app.route("/api/v1/search", methods=["GET", "POST"])
     def search():
         search_for = request.args.get('query')
-        snippets = parser_v1_0.search(parser_v1_0.make_query(q=search_for, pagesize = 15), 1)
+        snippets = parser_v1_0.search(
+            parser_v1_0.make_query(q=search_for, pagesize=15), 1)
 
         return jsonify(snippets)
 

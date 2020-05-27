@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import collections
 
 
-def make_query(q = None, tags = None, is_accepted = False, tab = 'Relevance', pagesize = 50):
+def make_query(q=None, tags=None, is_accepted=False, tab = 'Relevance', pagesize = 50):
     # формування запиту
     url = 'https://stackoverflow.com/search?'
     query = url + '&tab=' + tab + '&pagesize=' + str(pagesize) + '&q='
@@ -16,8 +16,9 @@ def make_query(q = None, tags = None, is_accepted = False, tab = 'Relevance', pa
         tags = tags.replace('[', sep[0]).replace(']', sep[1])
         query = query + tags
     if is_accepted:
-        query = query +'+isaccepted:yes'
+        query = query + '+isaccepted:yes'
     return query
+
 
 def search(quarry, n):
     all_code = []
@@ -55,14 +56,17 @@ def search(quarry, n):
                 result_obj["href"] = question_link[i]
                 result_obj["code"] = [] + code_from_url
                 result_obj["date"] = soup.find('time').text
-                result_obj["likes"] = min(abs(i**2 - i * 3), abs(i - i**3)) % 20
-                result_obj["text"] = soup.find('a', attrs={'class':'question-hyperlink'}).text
+                result_obj["likes"] = min(
+                    abs(i**2 - i * 3), abs(i - i**3)) % 20
+                result_obj["text"] = soup.find(
+                    'a', attrs={'class': 'question-hyperlink'}).text
 
                 all_code.append(result_obj)
             page += 1
             return all_code
     except:
-         raise ValueError
+        raise ValueError
+
 
 def search_dynamic(quarry, n, client):
     page = 1
@@ -99,10 +103,12 @@ def search_dynamic(quarry, n, client):
                 result_obj["href"] = question_link[i]
                 result_obj["code"] = [] + code_from_url
                 result_obj["date"] = soup.find('time').text
-                result_obj["likes"] = min(abs(i**2 - i * 3), abs(i - i**3)) % 20
-                result_obj["text"] = soup.find('a', attrs={'class':'question-hyperlink'}).text
+                result_obj["likes"] = min(
+                    abs(i**2 - i * 3), abs(i - i**3)) % 20
+                result_obj["text"] = soup.find(
+                    'a', attrs={'class': 'question-hyperlink'}).text
 
                 client.add_result(result_obj)
             page += 1
     except:
-         raise ValueError
+        raise ValueError

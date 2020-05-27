@@ -4,6 +4,11 @@
 
 const socket = io();
 
+socket.on('update_results', (json) => {
+	searchResult = null;
+	showTestcases(json.data);
+});
+
 const nodesCache = createNodesCache([
 	'main-container', 'search-options', 'search-results',
 	'main-search-field', 'main-search-button',
@@ -11,7 +16,7 @@ const nodesCache = createNodesCache([
 	'testcases-container', 'add-testcase-button', 'see-filtered-button',
 	'search-results', 'filtered-num', 'results-container',
 	'testcaseTemplate', 'testcaseArgumentFieldTemplate',
-	'searchResultAnswerTemplate'
+	'searchResultAnswerTemplate',
 ]);
 
 let searchResult = null;
@@ -48,31 +53,12 @@ nodesCache['main-search-button'].addEventListener('click', e => {
 	// 	},
 	// ...
 	// ]
-	showTestcases([
-		{
-			"href": '#',
-			"text": "Test text",
-			"likes": 10,
-			"date": 1589139954
-		},
-		{
-			"href": '#',
-			"text": "Test text",
-			"likes": 10,
-			"date": 1589139954
-		},
-		{
-			"href": '#',
-			"text": "Test text",
-			"likes": 10,
-			"date": 1589139954
-		}
-	]);
 	loader.call('get', 'search', {'query': query})
 		.then(
 			resolve => { searchResult = null; showTestcases(resolve); },
 			reject => console.error(reject)
 		);
+	// socket.emit("search", {'query': query});
 
 }, false);
 
@@ -113,10 +99,13 @@ nodesCache['add-testcase-button'].addEventListener('click', e => {
 
 }, false);
 
-const showTestcases = (response) => {
-	
-	nodesCache['found-num'].innerHTML = response.length;
-	searchResult = response;
+const debug_print = (data) => {
+	console.log(data);
+}
+
+const showTestcases = (results) => {
+	nodesCache['found-num'].innerHTML = results.length;
+	searchResult = results;
 	document.body.className = 'testcases';
 
 }

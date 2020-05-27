@@ -1,6 +1,9 @@
 import mimetypes
+import random
 
 import global_vars
+
+import parser_v1_0
 
 from os import path
 
@@ -21,6 +24,21 @@ from flask_socketio import SocketIO, disconnect
 
 from authorization import setup_authorization, is_authenticated
 from client import Client
+
+GENERIC_RESPONSE = [
+        {
+            "href": '#',
+            "text": "answer1",
+            "likes": 0,
+            "date": 1589139954
+        },
+        {
+            "href": '#',
+            "text": "answer2",
+            "likes": 34,
+            "date": 1589139954
+        },
+    ]
 
 
 def get_connections_by_ip(ip):
@@ -84,6 +102,10 @@ def main(CFG):
     def index():
         return render_template("index.html")
 
+    @app.route("/registration")
+    def registration():
+        return render_template("registration.html")
+
     @app.route("/static/<path:file_path>")
     def send_static(file_path):
         file_mimetype = mimetypes.guess_type(file_path)[0]
@@ -102,6 +124,17 @@ def main(CFG):
             + " consider doing an issue report"
             + " on project's GitHub."
         )
+
+    @app.route("/api/v1/search", methods=["GET", "POST"])
+    def search():
+        search_for = request.args.get('query')
+        snippets = parser_v1_0.search(parser_v1_0.make_query(q=search_for, pagesize = 15), 1)
+
+        return jsonify(snippets)
+
+    @app.route("/api/v1/filter", methods=["GET", "POST"])
+    def filter():
+        return jsonify(GENERIC_RESPONSE)
 
     @app.route("/me")
     def me():
@@ -141,13 +174,18 @@ def main(CFG):
             disconnect(request.sid)
             return
 
-        client = Client(session, request, current_user)
+        client = Client(socketio, session, request, current_user)
         client.on_connect()
 
     @socketio.on("disconnect")
     def on_disconnect(methods=["GET", "POST"]):
         if request.sid in global_vars.clients_by_sid.keys():
             global_vars.clients_by_sid[request.sid].on_disconnect()
+
+    @socketio.on("search")
+    def on_search(json, methods=["GET", "POST"]):
+        if request.sid in global_vars.clients_by_sid.keys():
+            global_vars.clients_by_sid[request.sid].on_search(json)
 
     print("=====\n" + "Server starting on " + str(IP) + ":" + str(PORT))
 

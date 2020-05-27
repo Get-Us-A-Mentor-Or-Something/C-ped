@@ -7,6 +7,7 @@ from flask import (
     request,
     session,
     url_for,
+    jsonify,
 )
 from flask_login import (
     LoginManager,
@@ -27,6 +28,11 @@ def is_authenticated(session_obj, request_obj):
 
 
 def setup_general_authorization(app, CFG):
+    @app.route("/api/v1/login", methods=["GET", "POST"])
+    def login():
+        print("getting a login attempt")
+        return jsonify("Success!")
+
     @app.route("/logout")
     @login_required
     def logout():

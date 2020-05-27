@@ -1,4 +1,5 @@
 import global_vars
+import parser_v1_0
 
 import re
 
@@ -25,6 +26,8 @@ class Client_Info:
         self.clients_connected = 0
 
         self.loaded = True
+
+        self.current_results = []
 
     @staticmethod
     def get(user_id, ip):
@@ -60,7 +63,9 @@ class Client_Info:
 
 
 class Client:
-    def __init__(self, session_obj, request_obj, current_user):
+    def __init__(self, app, session_obj, request_obj, current_user):
+        self.app = app
+
         self.ip = request_obj.remote_addr
         self.sid = request_obj.sid
 
@@ -124,6 +129,14 @@ class Client:
         )
 
         self.client_info.loaded = False
+
+    def on_search(self, json):
+        search_for = json['query']
+        parser_v1_0.search_dynamic(parser_v1_0.make_query(q=search_for, pagesize = 15), 1, self)
+
+    def add_result(self, result):
+        self.client_info.current_results.append(result)
+        self.app.emit('update_results', {"data": self.client_info.current_results}, room=self.sid)
 
     def disconnect(self):
         disconnect(self.sid)

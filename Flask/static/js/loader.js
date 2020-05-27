@@ -20,15 +20,16 @@ class Loader {
 				true);
 
 			request.onreadystatechange = event => {
-				if (request.readyState == 4) {
-					try{
-						let result = JSON.parse(request.response);
-					// some error while JSON parsing occured
-					} catch(e) { reject(result.response); };
-					// otherwise just return result
-					resolve(result.response);
-				}
-			}
+	        	if (request.readyState == 4) {
+	          		let result = null;
+	          		try{
+	            		result = JSON.parse(request.response);
+	          			// some error while JSON parsing occured
+	          		} catch(e) { reject(request.response); };
+	          		// otherwise just return result
+	          		resolve(result);
+	      	}
+	      }
 
 			// you may also pass FormData class which will be sent to server.
 			// use for file uploading.

@@ -119,13 +119,13 @@ const generateAnswerNode = (data) => {
 	let template = nodesCache['searchResultAnswerTemplate']
 		.content.cloneNode(true);
 
-	let date = (new Date(data['date'] * 1000)).toLocaleDateString();
+	// let date = (new Date(data['date'] * 1000)).toLocaleDateString();
 
 	let templateRoot = template.querySelector('.result');
 	templateRoot.querySelector('.resultText').innerHTML = data['text'];
 	templateRoot.querySelector('.resultText').setAttribute('href', data['href']);
 	templateRoot.querySelector('.resultLikes').innerHTML = data['likes'];
-	templateRoot.querySelector('.resultDate').innerHTML = date;
+	templateRoot.querySelector('.resultDate').innerHTML = data['date'];
 
 	return templateRoot;
 
